@@ -53,8 +53,24 @@ a{color:inherit}
 .btn-o:hover{border-color:var(--primary)}
 @media(max-width:760px){.nav{display:none}.brand{font-size:13px}.brand img{height:24px}.top-in{gap:10px}.top-in .btn{padding:9px 12px;font-size:13px}}
 .kicker{font-family:var(--font-s);font-size:12px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--primary)}
-/* ============ S0 STAGE: координаты Remotion / 19.2 = cqi ============ */
-.stage{position:relative;width:100%;max-width:1728px;margin:0 auto;aspect-ratio:16/9;container-type:inline-size;overflow:hidden;background:var(--bg)}
+/* ================= STORIES PLAYER ================= */
+.stories{background:#000;border-bottom:1px solid var(--border)}
+.player{position:relative;width:min(100%,calc(86vh*16/9),1728px);margin:0 auto;aspect-ratio:16/9;container-type:inline-size;overflow:hidden;background:var(--bg);user-select:none;-webkit-user-select:none;touch-action:pan-y}
+.scene{position:absolute;inset:0;opacity:0;visibility:hidden;transition:opacity .35s ease;overflow:hidden}
+.scene.on{opacity:1;visibility:visible;z-index:2}
+.paused .scene *{animation-play-state:paused!important}
+.segs{position:absolute;top:0;left:0;right:0;z-index:20;display:flex;gap:6px;padding:10px 12px 0}
+.seg{flex:1;height:22px;background:none;border:0;padding:9px 0;cursor:pointer}
+.seg i{display:block;height:3px;border-radius:2px;background:rgba(255,255,255,.28);overflow:hidden;position:relative}
+.seg i::after{content:"";position:absolute;inset:0;background:#fff;transform-origin:left;transform:scaleX(var(--f,0))}
+.seg.done i::after{transform:scaleX(1)}
+.tap{position:absolute;top:0;bottom:0;z-index:10;background:none;border:0;width:32%;cursor:pointer}
+.tap.l{left:0}.tap.r{right:0;width:68%}
+.s-cta{position:absolute;z-index:15;left:0;right:0;bottom:3.5cqi;display:flex;justify-content:center;gap:2cqi;pointer-events:none}
+.s-cta a{pointer-events:auto;font-family:var(--font-s);font-weight:600;font-size:1.9cqi;text-decoration:none;border-radius:.9cqi;padding:1.3cqi 2.6cqi;background:var(--primary);color:#04292a}
+.s-cta a.ghost{background:rgba(10,10,10,.55);color:var(--fg);border:1px solid var(--border);backdrop-filter:blur(8px)}
+.s-hint{position:absolute;z-index:15;bottom:1cqi;right:1.6cqi;font-family:var(--font-m);font-size:1.1cqi;color:rgba(255,255,255,.4)}
+/* ---- S0 (координаты лупа / 19.2) ---- */
 .beat{position:absolute;left:5cqi;top:5.2cqi;opacity:0;transform:translateY(1.15cqi);transition:opacity .6s var(--out),transform .6s var(--out)}
 .beat.on{opacity:1;transform:none}
 .beat .uz{font-family:var(--font-d);font-weight:600;font-size:2.5cqi;line-height:1.12;letter-spacing:-.015em}
@@ -94,40 +110,105 @@ a{color:inherit}
 .plate b{font-family:var(--font-d);font-size:2.29cqi;font-weight:700}
 .plate small{font-family:var(--font-s);font-size:1.67cqi;color:var(--dim)}
 .plate .live{font-family:var(--font-s);font-size:1.25cqi;font-weight:600;letter-spacing:.1em;color:var(--primary)}
-.stage .glow{position:absolute;left:0;right:0;bottom:0;height:17.7cqi;background:linear-gradient(0deg,rgba(57,179,175,.13),transparent);opacity:0;pointer-events:none}
+.s0 .glow{position:absolute;left:0;right:0;bottom:0;height:17.7cqi;background:linear-gradient(0deg,rgba(57,179,175,.13),transparent);opacity:0;pointer-events:none}
 .play .glow{animation:fadeIn 1s var(--out) 2.3s forwards}
-.stage .slot{position:absolute;top:5.2cqi;right:5cqi;font-family:var(--font-s);font-size:1.25cqi;font-weight:600;letter-spacing:.1em;color:var(--dim);text-transform:uppercase}
-/* мобила: та же сцена вертикальной сборкой */
+.slot{position:absolute;top:5.2cqi;right:5cqi;font-family:var(--font-s);font-size:1.25cqi;font-weight:600;letter-spacing:.1em;color:var(--dim);text-transform:uppercase;z-index:3}
+/* ---- S1 ---- */
+.s1 img.bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.s1 .zoom{position:absolute;inset:0;animation:kb 24s ease-in-out infinite alternate}
+@keyframes kb{from{transform:scale(1)}to{transform:scale(1.1)}}
+.s1 .dim{position:absolute;inset:0;background:linear-gradient(180deg,rgba(10,10,10,.45),rgba(10,10,10,.55) 60%,rgba(10,10,10,.78))}
+.s1 .pill{position:absolute;top:5.2cqi;right:5cqi;font-family:var(--font-s);font-size:1.35cqi;font-weight:600;color:var(--fg);background:rgba(10,10,10,.6);border:1px solid var(--border);border-radius:99cqi;padding:.7cqi 1.4cqi}
+.s1 .pill b{color:var(--primary)}
+.s1 .body{position:absolute;left:5cqi;right:5cqi;bottom:9cqi}
+.s1 .kick{font-family:var(--font-s);font-size:1.67cqi;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--primary)}
+.s1 .t1{font-family:var(--font-d);font-weight:600;font-size:3.4cqi;line-height:1.08;letter-spacing:-.015em;margin-top:.6cqi}
+.s1 .t2{font-family:var(--font-s);font-size:2cqi;color:var(--dim);margin-top:.4cqi}
+.s1 .nums{display:flex;gap:4cqi;margin-top:1.8cqi}
+.s1 .num b{display:block;font-family:var(--font-d);font-weight:700;font-size:4.4cqi;line-height:1;color:var(--primary);font-variant-numeric:tabular-nums}
+.s1 .num>span{font-family:var(--font-s);font-size:1.35cqi;color:var(--dim)}
+.s1 .tags{margin-top:1.4cqi}
+.s1 .tag{display:inline-block;font-family:var(--font-m);font-size:1.25cqi;border:1px solid var(--border);border-radius:99cqi;padding:.5cqi 1.1cqi;margin-right:1cqi;background:rgba(10,10,10,.6)}
+.rise{opacity:0;transform:translateY(1.4cqi)}
+.play .rise{animation:riseIn .7s var(--out) forwards;animation-delay:var(--rd,.3s)}
+@keyframes riseIn{to{opacity:1;transform:none}}
+/* ---- S2 ---- */
+.s2 .kick{position:absolute;left:5cqi;top:5.2cqi;font-family:var(--font-s);font-size:1.67cqi;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--primary)}
+.s2 .termbox{position:absolute;left:17cqi;right:17cqi;top:44%;transform:translateY(-54%);border:1px solid var(--border);border-radius:.9cqi;background:#101010;overflow:hidden}
+.s2 .tb{display:flex;gap:.6cqi;padding:1cqi 1.4cqi;border-bottom:1px solid var(--border);align-items:center}
+.s2 .tb i{width:.8cqi;height:.8cqi;min-width:8px;min-height:8px;border-radius:50%;background:#333}
+.s2 .tb i:first-child{background:var(--primary)}
+.s2 .term{font-family:var(--font-m);font-size:1.5cqi;line-height:1.8;padding:1.8cqi 2cqi;min-height:0}
+.s2 .term .ln{opacity:0;transform:translateY(.4cqi)}
+.play .s2 .term .ln{animation:riseIn .4s var(--out) forwards;animation-delay:var(--rd)}
+.ok{color:#00D391}.tl{color:var(--primary)}.dm{color:var(--dim)}
+.s2 .badges{position:absolute;left:0;right:0;bottom:10.5cqi;display:flex;justify-content:center;gap:1cqi}
+.s2 .chipx{font-family:var(--font-m);font-size:1.25cqi;letter-spacing:.08em;border:1px solid var(--primary);border-radius:99cqi;padding:.6cqi 1.3cqi}
+.s2 .chipx.dim{border-color:var(--border);color:var(--dim)}
+/* ---- S3-5 partners ---- */
+.sp .center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.4cqi;text-align:center;padding:0 8cqi}
+.sp .role{font-family:var(--font-m);font-size:1.4cqi;letter-spacing:.12em;text-transform:uppercase;color:var(--primary)}
+.sp img.plogo{height:7cqi;max-width:34cqi;object-fit:contain;border-radius:1.2cqi}
+.sp .pname{font-family:var(--font-d);font-weight:700;font-size:5cqi;letter-spacing:-.02em;line-height:1}
+.sp .pline{font-family:var(--font-d);font-weight:600;font-size:2.3cqi;line-height:1.2}
+.sp .pline2{font-family:var(--font-s);font-size:1.6cqi;color:var(--dim)}
+/* ---- S6 ---- */
+.s6 .center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.5cqi;text-align:center}
+.s6 img.mark{height:7cqi}
+.s6 .th{font-family:var(--font-d);font-weight:600;font-size:2.7cqi;line-height:1.15}
+.s6 .th2{font-family:var(--font-s);font-size:1.7cqi;color:var(--dim)}
+.s6 img.qr{width:15cqi;height:15cqi;background:#fff;border-radius:1.2cqi;padding:.9cqi}
+.s6 .go{font-family:var(--font-s);font-weight:600;font-size:1.9cqi;text-decoration:none;background:var(--primary);color:#04292a;border-radius:.9cqi;padding:1.2cqi 2.6cqi;pointer-events:auto;position:relative;z-index:16}
+/* mobile player: 9/16.5 stories */
 @media(max-width:719px){
-  .stage{aspect-ratio:9/14;min-height:214cqi;max-width:560px}
-  .beat{left:6cqi;top:5cqi}.beat .uz{font-size:7cqi}.beat .ru{font-size:4.4cqi}
-  .stage .slot{display:none}
-  .core{left:50%;top:32cqi;transform:translateX(-50%);width:60cqi}
-  .core img{height:20cqi}.core .wm{font-size:6cqi}
+  .player{width:100%;aspect-ratio:9/16.2;max-height:94dvh}
+  .segs{padding:8px 8px 0;gap:4px}
+  .s-cta{bottom:5cqi;flex-direction:column;align-items:center;gap:2cqi}
+  .s-cta a{font-size:4.4cqi;padding:3cqi 8cqi;border-radius:2.6cqi}
+  .s-hint{display:none}
+  .beat{left:6cqi;top:4.5cqi}.beat .uz{font-size:6.4cqi}.beat .ru{font-size:4.2cqi}
+  .slot{display:none}
+  .core{left:50%;top:26cqi;transform:translateX(-50%);width:60cqi}
+  .core img{height:17cqi}.core .wm{font-size:5.4cqi}
   .play .core{animation-name:markInM}
   @keyframes markInM{from{opacity:0;transform:translateX(-50%) scale(.72)}to{opacity:1;transform:translateX(-50%) scale(1)}}
-  .scard{width:76cqi;left:12cqi;height:auto;min-height:22cqi;padding:3cqi 5cqi;border-radius:2.4cqi}
-  .scard .n{font-size:6.4cqi}.scard .s{font-size:3.4cqi}
-  .sc-left{top:68cqi}.sc-top{top:96cqi}.sc-right{top:124cqi}.sc-bottom{top:152cqi}
+  .scard{width:76cqi;left:12cqi;height:auto;min-height:19cqi;padding:2.6cqi 5cqi;border-radius:2.4cqi}
+  .scard .n{font-size:5.8cqi}.scard .s{font-size:3.2cqi}
+  .sc-left{top:60cqi}.sc-top{top:86cqi}.sc-right{top:112cqi}.sc-bottom{top:138cqi}
   .play .sc-left{animation-delay:.9s}.play .sc-top{animation-delay:1.1s}.play .sc-right{animation-delay:1.3s}.play .sc-bottom{animation-delay:1.5s}
   .spoke.h{display:none}
-  .sp-t{left:50%;top:60cqi;height:8cqi}.sp-b{left:50%;top:90cqi;height:6cqi}
+  .sp-t{left:50%;top:53cqi;height:7cqi}.sp-b{left:50%;top:81cqi;height:5cqi}
   .spoke.m2,.spoke.m3{display:block;left:50%;width:2px;background:repeating-linear-gradient(180deg,var(--sc) 0 8px,transparent 8px 16px)}
-  .m2{top:118cqi;height:6cqi;--sc:rgba(255,255,255,.28);--dl:1.3s}
-  .m3{top:146cqi;height:6cqi;--sc:rgba(255,255,255,.28);--dl:1.5s}
-  .pulse{left:50%;top:60cqi;transform:translate(-50%,-50%)}
+  .m2{top:107cqi;height:5cqi;--sc:rgba(255,255,255,.28);--dl:1.3s}
+  .m3{top:133cqi;height:5cqi;--sc:rgba(255,255,255,.28);--dl:1.5s}
+  .pulse{left:50%;top:53cqi;transform:translate(-50%,-50%)}
   .play .pulse{animation-name:travelM}
-  @keyframes travelM{0%{opacity:0;top:60cqi}12%{opacity:1}85%{opacity:1}100%{opacity:0;top:67cqi}}
-  .plate{left:6cqi;right:6cqi;bottom:4cqi;height:auto;min-height:20cqi;padding:4cqi 5cqi;border-radius:3cqi;flex-direction:column;align-items:flex-start;gap:1cqi}
-  .plate b{font-size:6.4cqi}.plate small{font-size:4.2cqi}.plate .live{font-size:3.4cqi}
-  .stage .glow{height:30cqi}
+  @keyframes travelM{0%{opacity:0;top:53cqi}12%{opacity:1}85%{opacity:1}100%{opacity:0;top:59cqi}}
+  .plate{left:6cqi;right:6cqi;bottom:16cqi;height:auto;min-height:17cqi;padding:3.4cqi 5cqi;border-radius:3cqi;flex-direction:column;align-items:flex-start;gap:1cqi}
+  .plate b{font-size:5.8cqi}.plate small{font-size:4cqi}.plate .live{font-size:3.2cqi}
+  .s0 .glow{height:30cqi}
+  .s1 .pill{top:4.5cqi;right:6cqi;font-size:3.4cqi;padding:1.8cqi 3.4cqi}
+  .s1 .body{left:6cqi;right:6cqi;bottom:24cqi}
+  .s1 .kick{font-size:3.8cqi}.s1 .t1{font-size:7.6cqi}.s1 .t2{font-size:4.6cqi}
+  .s1 .nums{gap:6cqi;margin-top:4cqi}
+  .s1 .num b{font-size:9cqi}.s1 .num span{font-size:3.4cqi}
+  .s1 .tag{font-size:3.2cqi;padding:1.4cqi 3cqi}
+  .s2 .kick{left:6cqi;top:4.5cqi;font-size:3.8cqi}
+  .s2 .termbox{left:6cqi;right:6cqi}
+  .s2 .term{font-size:3.5cqi}
+  .s2 .badges{bottom:24cqi}
+  .s2 .chipx{font-size:3.2cqi;padding:1.4cqi 3cqi}
+  .sp .role{font-size:3.6cqi}.sp img.plogo{height:14cqi;max-width:70cqi}
+  .sp .pname{font-size:11cqi}.sp .pline{font-size:5.4cqi}.sp .pline2{font-size:4cqi}
+  .s6 img.mark{height:15cqi}.s6 .th{font-size:6cqi}.s6 .th2{font-size:4.4cqi}
+  .s6 img.qr{width:38cqi;height:38cqi}
+  .s6 .go{font-size:4.6cqi;padding:3cqi 8cqi;border-radius:2.6cqi}
 }
-/* hero copy */
-.hero{border-bottom:1px solid var(--border)}
+/* hero copy + sections */
 .hero-copy{padding:54px 0 30px;max-width:880px}
 .hero-copy h1{margin:14px 0 0;font-family:var(--font-d);font-weight:600;font-size:clamp(32px,4.8vw,56px);line-height:1.04;letter-spacing:-.02em}
 .hero-copy h1 em{font-style:normal;color:var(--primary)}
-.hero-copy .sub{color:var(--dim);font-size:17px;line-height:1.55;margin:18px 0 24px;max-width:60ch;font-family:var(--font-s)}
+.hero-copy .sub{color:var(--dim);font-size:17px;line-height:1.55;margin:18px 0 24px;max-width:60ch}
 .hero-cta{display:flex;gap:12px;flex-wrap:wrap}
 .chips{display:flex;gap:10px;flex-wrap:wrap;margin:24px 0 8px}
 .chip{font-family:var(--font-m);font-size:12px;letter-spacing:.08em;border:1px solid var(--primary);color:var(--fg);border-radius:999px;padding:8px 14px}
@@ -136,19 +217,16 @@ a{color:inherit}
 .chip.soon .dot{background:var(--dim)}
 .tick{border-top:1px solid var(--border);background:#0d0d0d;font-family:var(--font-m);font-size:13px;color:var(--dim);overflow:hidden;white-space:nowrap}
 .tick span{display:inline-block;padding:12px 0;animation:tick 26s linear infinite}
-.tick b{color:var(--fg)} .tick .t{color:var(--primary)}
 @keyframes tick{from{transform:translateX(0)}to{transform:translateX(-50%)}}
 .rv{opacity:0;transform:translateY(22px);transition:opacity .7s var(--out),transform .7s var(--out)}
 .rv.on{opacity:1;transform:none}
 .sec{padding:72px 0;border-bottom:1px solid var(--border);position:relative}
 .sec h2{font-family:var(--font-d);font-weight:600;font-size:clamp(26px,3.6vw,40px);letter-spacing:-.02em;margin:12px 0 10px}
 .sec .lead{color:var(--dim);font-size:17px;line-height:1.6;max-width:70ch}
-/* S1 */
 .ev-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:26px;margin-top:28px;align-items:stretch}
 @media(max-width:900px){.ev-grid{grid-template-columns:1fr}}
 .photo{position:relative;border-radius:16px;overflow:hidden;border:1px solid var(--border);min-height:340px}
 .photo img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;animation:kb 24s ease-in-out infinite alternate}
-@keyframes kb{from{transform:scale(1)}to{transform:scale(1.1)}}
 .photo::after{content:"";position:absolute;inset:0;background:rgba(10,10,10,.36)}
 .photo .cap{position:absolute;left:18px;bottom:16px;z-index:2}
 .tag{display:inline-block;font-family:var(--font-m);font-size:12px;border:1px solid var(--border);border-radius:999px;padding:6px 12px;margin:0 8px 8px 0;color:var(--fg);background:rgba(10,10,10,.6)}
@@ -170,7 +248,6 @@ a{color:inherit}
 .stat{border:1px solid var(--border);border-radius:12px;padding:16px;background:var(--card)}
 .stat b{font-family:var(--font-d);font-size:30px;display:block}
 .stat span{color:var(--dim);font-size:13px}
-/* S2 window */
 .win{border:1px solid var(--border);border-radius:16px;overflow:hidden;background:#101010;margin-top:28px}
 .win-bar{display:flex;gap:8px;padding:12px 16px;border-bottom:1px solid var(--border);align-items:center}
 .win-bar i{width:11px;height:11px;border-radius:50%;background:#333;display:block}
@@ -183,13 +260,9 @@ a{color:inherit}
 .on .term .ln:nth-child(2){transition-delay:.3s}.on .term .ln:nth-child(3){transition-delay:.6s}
 .on .term .ln:nth-child(4){transition-delay:.9s}.on .term .ln:nth-child(5){transition-delay:1.2s}
 .on .term .ln:nth-child(6){transition-delay:1.5s}.on .term .ln:nth-child(7){transition-delay:1.8s}
-.ok{color:var(--success,#00D391)}.tl{color:var(--primary)}.dm{color:var(--dim)}
-.shot{border-left:1px solid var(--border);padding:20px;display:flex;flex-direction:column;gap:12px}
-@media(max-width:800px){.shot{border-left:0;border-top:1px solid var(--border)}}
 .node{border:1px solid var(--border);border-radius:10px;padding:12px 14px;background:var(--card);font-size:14px}
 .node b{color:var(--primary);font-family:var(--font-m);font-weight:600}
 .badges{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px}
-/* partners */
 .pgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:26px}
 @media(max-width:800px){.pgrid{grid-template-columns:1fr}}
 .pcard{border:1px solid var(--border);border-radius:14px;padding:22px;background:var(--card)}
@@ -197,7 +270,6 @@ a{color:inherit}
 .pcard h3{margin:10px 0 6px;font-size:20px;font-family:var(--font-d);font-weight:600}
 .pcard p{color:var(--dim);font-size:14.5px;line-height:1.6;margin:0 0 14px}
 .pcard img{height:34px;max-width:180px;object-fit:contain}
-/* final S6 */
 .final{text-align:center;padding:84px 0}
 .final h2{font-size:clamp(28px,4vw,44px)}
 .final img.qr{width:220px;height:220px;background:#fff;border-radius:16px;padding:12px;margin:26px auto;display:block}
@@ -208,40 +280,117 @@ a{color:inherit}
 .foot a:hover{color:var(--fg)}
 .sticky{position:fixed;left:0;right:0;bottom:0;z-index:60;display:none;justify-content:center;padding:10px;background:rgba(10,10,10,.85);backdrop-filter:blur(12px);border-top:1px solid var(--border)}
 @media(max-width:760px){.sticky{display:flex}.foot{padding-bottom:120px}}
+@media (prefers-reduced-motion:reduce){*{animation-duration:.01s!important;transition-duration:.01s!important}}
 </style>
 </head>
 <body>
 <header class="top"><div class="wrap top-in">
   <a class="brand" href="#top"><img src="assets/logo-mark.svg" alt="AI Qadam"/>AI QADAM</a>
-  <nav class="nav"><a href="#demo">Демо</a><a href="#events">События</a><a href="#build">Проекты</a><a href="#partners">Партнёры</a></nav>
+  <nav class="nav"><a href="#demo">Сторис</a><a href="#events">События</a><a href="#build">Проекты</a><a href="#partners">Партнёры</a></nav>
   <div class="cta"><a class="btn btn-p" href="https://t.me/ai_qadam_community">Вступить в Telegram</a></div>
 </div></header>
 
 <main id="top">
-<!-- S0: сцена-кадр из лупа, 1:1 по координатам -->
-<section class="hero" id="demo">
-  <div class="stage" id="stage0">
-    <div class="slot">AI Qadam · Build</div>
-    <div class="beat on" data-beat="0"><div class="uz">Markaziy Osiyo uchun AI hamjamiyati infratuzilmasi</div><div class="ru">Инфраструктура AI-сообщества для Центральной Азии</div></div>
-    <div class="beat" data-beat="1"><div class="uz">Shovqin emas — halollik, nazariya emas — amaliyot</div><div class="ru">Честность вместо шума, практика вместо теории</div></div>
-    <div class="glow"></div>
-    <div class="spoke h sp-l"></div><div class="spoke h sp-r"></div>
-    <div class="spoke v sp-t"></div><div class="spoke v sp-b"></div>
-    <div class="spoke v m2"></div><div class="spoke v m3"></div>
-    <div class="pulse"></div>
-    <div class="scard live sc-left"><div class="row"><span class="n">Events</span><span class="s">Live</span></div></div>
-    <div class="scard sc-top"><div class="row"><span class="n">Education</span><span class="s">Soon</span></div></div>
-    <div class="scard sc-right"><div class="row"><span class="n">People</span><span class="s">Soon</span></div></div>
-    <div class="scard sc-bottom"><div class="row"><span class="n">Accelerator</span><span class="s">Soon</span></div></div>
-    <div class="core"><img src="assets/logo-mark.svg" alt=""/><div class="wm">AI QADAM</div></div>
-    <div class="plate"><div><b>Build</b> <small>· ochiq kod · открытый код</small><br/><small>Poydevor, oqim emas · Фундамент, а не поток</small></div><span class="live">LIVE</span></div>
+<!-- STORIES -->
+<section class="stories" id="demo">
+  <div class="player" id="player">
+    <div class="segs" id="segs"></div>
+    <div class="scenes">
+      <div class="scene s0">
+        <div class="slot">AI Qadam · Build</div>
+        <div class="beat on" data-beat="0"><div class="uz">Markaziy Osiyo uchun AI hamjamiyati infratuzilmasi</div><div class="ru">Инфраструктура AI-сообщества для Центральной Азии</div></div>
+        <div class="beat" data-beat="1"><div class="uz">Shovqin emas — halollik, nazariya emas — amaliyot</div><div class="ru">Честность вместо шума, практика вместо теории</div></div>
+        <div class="glow"></div>
+        <div class="spoke h sp-l"></div><div class="spoke h sp-r"></div>
+        <div class="spoke v sp-t"></div><div class="spoke v sp-b"></div>
+        <div class="spoke v m2"></div><div class="spoke v m3"></div>
+        <div class="pulse"></div>
+        <div class="scard live sc-left"><div class="row"><span class="n">Events</span><span class="s">Live</span></div></div>
+        <div class="scard sc-top"><div class="row"><span class="n">Education</span><span class="s">Soon</span></div></div>
+        <div class="scard sc-right"><div class="row"><span class="n">People</span><span class="s">Soon</span></div></div>
+        <div class="scard sc-bottom"><div class="row"><span class="n">Accelerator</span><span class="s">Soon</span></div></div>
+        <div class="core"><img src="assets/logo-mark.svg" alt=""/><div class="wm">AI QADAM</div></div>
+        <div class="plate"><div><b>Build</b> <small>· ochiq kod · открытый код</small><br/><small>Poydevor, oqim emas · Фундамент, а не поток</small></div><span class="live">LIVE</span></div>
+      </div>
+      <div class="scene s1">
+        <div class="zoom"><img class="bg" src="assets/photo-hall.jpg" alt=""/></div>
+        <div class="dim"></div>
+        <div class="pill">Keyingi mitap · <b>17-oktabr</b></div>
+        <div class="body">
+          <div class="kick rise" style="--rd:.3s">AI Qadam · Events</div>
+          <div class="t1 rise" style="--rd:.5s">Har saf 100+ kishi zalda</div>
+          <div class="t2 rise" style="--rd:.65s">Каждый раз 100+ человек в зале · на сцене практики, а не вендоры</div>
+          <div class="nums rise" style="--rd:.9s">
+            <div class="num"><b><span class="cnt2" data-v="100" data-suf="+">0</span></b><span>в зале</span></div>
+            <div class="num"><b><span class="cnt2" data-v="86" data-suf="%">0</span></b><span>активная роль</span></div>
+            <div class="num"><b><span class="cnt2" data-v="78" data-pre="+">0</span></b><span>NPS</span></div>
+            <div class="num"><b><span class="cnt2" data-v="80" data-suf="+">0</span></b><span>компаний</span></div>
+          </div>
+          <div class="tags rise" style="--rd:1.1s"><span class="tag">Meetup</span><span class="tag">Fail Stories Night</span><span class="tag">Hackathon</span></div>
+        </div>
+      </div>
+      <div class="scene s2">
+        <div class="kick rise" style="--rd:.2s">AI Qadam · Build — фундамент, а не поток</div>
+        <div class="termbox rise" style="--rd:.4s">
+          <div class="tb"><i></i><i></i><i></i></div>
+          <div class="term">
+            <div class="ln" style="--rd:.6s"><span class="dm">›</span> собрать регистрацию на митап с QR-чекином</div>
+            <div class="ln" style="--rd:1s"><span class="tl">⚙ ap_build_flow</span> <span class="ok">✓ reg-qr · 7 шагов</span></div>
+            <div class="ln" style="--rd:1.4s"><span class="tl">⚙ ap_validate_flow</span> <span class="ok">✓ 6/6 чисто</span></div>
+            <div class="ln" style="--rd:1.8s"><span class="tl">⚙ ap_lock_and_publish</span> <span class="ok">✓ опубликован как MCP-инструмент</span></div>
+            <div class="ln" style="--rd:2.2s"><span class="dm">MIT · DCO, без CLA · flow.aiqadam.org</span></div>
+          </div>
+        </div>
+        <div class="badges rise" style="--rd:2.4s"><span class="chipx">OPEN-SOURCE</span><span class="chipx">MIT / APACHE-2.0</span><span class="chipx dim">NO OPEN-CORE PAYWALLS</span></div>
+      </div>
+      <div class="scene sp s3">
+        <div class="slot">AI Qadam · U-BSS</div>
+        <div class="center">
+          <div class="role rise" style="--rd:.3s">Broadcast Partner</div>
+          <div class="pname rise" style="--rd:.5s">U-BSS</div>
+          <div class="pline rise" style="--rd:.8s">Oʻzbek nutqiy AI banklar uchun</div>
+          <div class="pline2 rise" style="--rd:1s">Узбекская речевая AI для банков · трансляция выступлений</div>
+        </div>
+      </div>
+      <div class="scene sp s4">
+        <div class="slot">AI Qadam · ProData</div>
+        <div class="center">
+          <div class="role rise" style="--rd:.3s">Technology Partner</div>
+          <img class="plogo rise" style="--rd:.5s" src="assets/prodata-logo.png" alt="ProData"/>
+          <div class="pline rise" style="--rd:.8s">Maʼlumotlar muhandisligi va AI-infratuzilma</div>
+          <div class="pline2 rise" style="--rd:1s">Инженерия данных и AI-инфраструктура</div>
+        </div>
+      </div>
+      <div class="scene sp s5">
+        <div class="slot">AI Qadam · Beelab</div>
+        <div class="center">
+          <div class="role rise" style="--rd:.3s">Infrastructure Partner</div>
+          <img class="plogo rise" style="--rd:.5s" src="assets/beelab-logo.svg" alt="BeeLab"/>
+          <div class="pline rise" style="--rd:.8s">Beepul ortidagi fintex · Pitsa va merch</div>
+          <div class="pline2 rise" style="--rd:1s">Финтех за продуктом Beepul · пицца и мерч митапов</div>
+        </div>
+      </div>
+      <div class="scene s6">
+        <div class="center">
+          <img class="mark rise" style="--rd:.3s" src="assets/logo-mark.svg" alt=""/>
+          <div class="th rise" style="--rd:.6s">Sotib olinmaydigan auditoriya</div>
+          <div class="th2 rise" style="--rd:.8s">Такую аудиторию не купить: доверяют и приводят коллег</div>
+          <img class="qr rise" style="--rd:1.1s" src="assets/qr-telegram.svg" alt="QR в Telegram"/>
+          <a class="go rise" style="--rd:1.4s" href="https://t.me/ai_qadam_community" data-stop>Вступить в Telegram →</a>
+        </div>
+      </div>
+    </div>
+    <button class="tap l" aria-label="Назад"></button>
+    <button class="tap r" aria-label="Вперёд"></button>
+    <div class="s-cta" id="scta"><a href="https://t.me/ai_qadam_community">Вступить в Telegram</a></div>
+    <div class="s-hint">← → · hold = pause</div>
   </div>
   <div class="wrap hero-copy">
     <div class="kicker">AI QADAM · UZ · KZ · KG · TJ</div>
     <h1>Инженеры, которые строят AI в Центральной Азии — <em>вместе.</em></h1>
     <p class="sub">Не конференция и не курс. Федерация локальных сообществ: практики рассказывают, что делали сами, а не что прочитали в отчёте.</p>
     <div class="hero-cta">
-      <a class="btn btn-p" href="#events">Смотреть живое демо</a>
+      <a class="btn btn-p" href="#events">Читать как лендинг ↓</a>
       <a class="btn btn-o" href="https://t.me/ai_qadam_community">Вступить в чат Узбекистана</a>
     </div>
     <div class="chips"><span class="chip"><span class="dot"></span>UZBEKISTAN</span><span class="chip"><span class="dot"></span>KAZAKHSTAN</span><span class="chip soon"><span class="dot"></span>TAJIKISTAN — СКОРО</span><span class="chip soon"><span class="dot"></span>KYRGYZSTAN — СКОРО</span></div>
@@ -249,7 +398,7 @@ a{color:inherit}
   <div class="tick"><div class="wrap"><span id="tick">…</span></div></div>
 </section>
 
-<!-- S1 -->
+<!-- лендинг ниже -->
 <section class="sec" id="events"><div class="wrap">
   <div class="kicker rv">S1 · AI QADAM EVENTS</div>
   <h2 class="rv">Каждый раз 100+ человек в зале</h2>
@@ -273,7 +422,6 @@ a{color:inherit}
   </div>
 </div></section>
 
-<!-- S2 -->
 <section class="sec" id="build"><div class="wrap">
   <div class="kicker rv">S2 · AI QADAM BUILD</div>
   <h2 class="rv">Фундамент, а не поток</h2>
@@ -302,7 +450,6 @@ a{color:inherit}
   <div class="hero-cta rv" style="margin-top:22px"><a class="btn btn-p" href="https://flow.aiqadam.org">flow.aiqadam.org →</a><a class="btn btn-o" href="https://build.aiqadam.org">build.aiqadam.org →</a></div>
 </div></section>
 
-<!-- S3–S5 -->
 <section class="sec" id="partners"><div class="wrap">
   <div class="kicker rv">S3–S5 · ПАРТНЁРЫ</div>
   <h2 class="rv">Вкладываются в сообщество, а не покупают аудиторию</h2>
@@ -314,7 +461,6 @@ a{color:inherit}
   </div>
 </div></section>
 
-<!-- S6 -->
 <section class="sec final" id="join"><div class="wrap">
   <div class="kicker rv">S6 · ПЕРЕБИВКА · ШОВ ЛУПА</div>
   <h2 class="rv">Сделаем qadam в сторону доверия</h2>
@@ -326,7 +472,7 @@ a{color:inherit}
 </main>
 
 <footer class="foot"><div class="wrap cols">
-  <div><a class="brand" href="#top" style="margin-bottom:10px"><img src="assets/logo-mark.svg" alt=""/>AI QADAM</a><span>Некоммерческое сообщество инженеров Центральной Азии. Бренд принадлежит сообществу.</span><br/><br/><span style="font-family:var(--font-m);font-size:12px">КОД · MIT · КОНТЕНТ · CC BY 4.0 · ПРОТОТИП · v1</span></div>
+  <div><a class="brand" href="#top" style="margin-bottom:10px"><img src="assets/logo-mark.svg" alt=""/>AI QADAM</a><span>Некоммерческое сообщество инженеров Центральной Азии. Бренд принадлежит сообществу.</span><br/><br/><span style="font-family:var(--font-m);font-size:12px">КОД · MIT · КОНТЕНТ · CC BY 4.0 · ПРОТОТИП · v2 stories</span></div>
   <div><b style="color:var(--fg)">Сообщество</b><a href="https://t.me/ai_qadam_community">Чат · Узбекистан</a><a href="https://t.me/ai_qadam_kazakhstan">Чат · Казахстан</a><a href="https://t.me/aiqadam_build">Чат · контрибьюторы</a></div>
   <div><b style="color:var(--fg)">Экосистема</b><a href="https://build.aiqadam.org">build.aiqadam.org</a><a href="https://flow.aiqadam.org">flow.aiqadam.org</a><a href="https://brand.aiqadam.org">brand.aiqadam.org</a></div>
   <div><b style="color:var(--fg)">Контакты</b><a href="mailto:binali.rustamov@aiqadam.org">binali.rustamov@aiqadam.org</a><a href="https://t.me/RETURN_VOID_0">Telegram · @RETURN_VOID_0</a></div>
@@ -336,14 +482,78 @@ a{color:inherit}
 <script>
 document.getElementById('tick').textContent =
  '● БЛИЖАЙШЕЕ  17 октября · 20:00   Fail Stories #2 — честные истории провалов · Bridge, Tashkent City   ●  '.repeat(4);
-(function(){const b=[...document.querySelectorAll('.beat')];let i=0;setInterval(()=>{b[i].classList.remove('on');i=(i+1)%b.length;b[i].classList.add('on');},6000);})();
+/* beats внутри S0 */
+(function(){const b=[...document.querySelectorAll('.s0 .beat')];let i=0;setInterval(()=>{b[i].classList.remove('on');i=(i+1)%b.length;b[i].classList.add('on');},6000);})();
+/* ---- stories engine ---- */
+const DUR=[8000,8000,8000,4500,4500,4500,7000];
+const scenes=[...document.querySelectorAll('.scene')];
+const segsBox=document.getElementById('segs');
+const segFills=scenes.map((_,i)=>{
+  const b=document.createElement('button');b.className='seg';b.setAttribute('aria-label','Сцена '+(i+1));
+  b.innerHTML='<i></i>';b.addEventListener('click',e=>{e.stopPropagation();show(i);});
+  segsBox.appendChild(b);return b.firstChild;
+});
+const player=document.getElementById('player');
+const scta=document.getElementById('scta');
+let idx=0,elapsed=0,lastTs=0,playing=true,holdTimer=null,held=false;
+const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
+function runCnt2(root){
+  root.querySelectorAll('.cnt2').forEach(el=>{
+    const v=+el.dataset.v,pre=el.dataset.pre||'',suf=el.dataset.suf||'',t0=performance.now();
+    (function f(t){const p=Math.min(1,(t-t0)/1100),e=1-Math.pow(1-p,3);el.textContent=pre+Math.round(v*e)+suf;if(p<1)requestAnimationFrame(f);})(t0);
+  });
+}
+function show(n){
+  idx=(n+scenes.length)%scenes.length;
+  scenes.forEach((s,i)=>{
+    const on=i===idx;
+    s.classList.remove('on','play');
+    segFills[i].parentElement.classList.toggle('done',i<idx);
+    if(on){void s.offsetWidth;s.classList.add('on','play');}
+  });
+  scta.style.display=(idx===0||idx===6)?'none':'flex';
+  elapsed=0;
+  if(idx===1)runCnt2(scenes[1]);
+}
+function loop(ts){
+  requestAnimationFrame(loop);
+  if(!playing||reduced){segFills[idx].style.setProperty('--f',reduced?1:elapsed/DUR[idx]);return;}
+  if(!lastTs)lastTs=ts;
+  elapsed+=ts-lastTs;lastTs=ts;
+  if(elapsed>=DUR[idx]){show(idx+1);return;}
+  segFills[idx].style.setProperty('--f',elapsed/DUR[idx]);
+}
+function setPaused(p){playing=!p;player.classList.toggle('paused',p);lastTs=0;}
+document.querySelector('.tap.l').addEventListener('click',()=>show(idx-1));
+document.querySelector('.tap.r').addEventListener('click',()=>show(idx+1));
+player.addEventListener('pointerdown',()=>{held=false;holdTimer=setTimeout(()=>{held=true;setPaused(true);},260);});
+['pointerup','pointercancel','pointerleave'].forEach(ev=>player.addEventListener(ev,()=>{
+  clearTimeout(holdTimer);
+  if(held){held=false;setPaused(false);}
+}));
+player.querySelectorAll('[data-stop]').forEach(a=>a.addEventListener('pointerdown',e=>e.stopPropagation()));
+scta.addEventListener('pointerdown',e=>e.stopPropagation());
+let tx0=null;
+player.addEventListener('touchstart',e=>{tx0=e.touches[0].clientX;},{passive:true});
+player.addEventListener('touchend',e=>{
+  if(tx0==null)return;const dx=e.changedTouches[0].clientX-tx0;tx0=null;
+  if(Math.abs(dx)>48)show(idx+(dx<0?1:-1));
+},{passive:true});
+document.addEventListener('keydown',e=>{
+  const r=player.getBoundingClientRect();
+  if(r.bottom<0||r.top>innerHeight)return;
+  if(e.key==='ArrowRight')show(idx+1);
+  if(e.key==='ArrowLeft')show(idx-1);
+  if(e.key===' '){e.preventDefault();setPaused(playing);}
+});
+show(0);requestAnimationFrame(loop);
+/* ---- scroll reveals ---- */
 const io=new IntersectionObserver(es=>es.forEach(e=>{
   if(!e.isIntersecting)return;
   e.target.classList.add('on');
-  if(e.target.id==='stage0')e.target.classList.add('play');
   if(e.target.id==='bars')e.target.querySelectorAll('.cnt').forEach(runCnt);
 }),{threshold:.2});
-document.querySelectorAll('.rv,#stage0,#bars,#win').forEach(el=>io.observe(el));
+document.querySelectorAll('.rv,#bars,#win').forEach(el=>io.observe(el));
 function runCnt(el){
   if(el.dataset.done)return;el.dataset.done=1;
   const v=+el.dataset.v,t0=performance.now();
