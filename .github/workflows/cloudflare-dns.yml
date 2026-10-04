@@ -1,0 +1,116 @@
+# Синхронизация DNS в Cloudflare под GitHub Pages для кастомного домена.
+#
+# Цепочка: aiqadam.org / www.aiqadam.org (Cloudflare DNS) -> GitHub Pages (этот репозиторий)
+# -> JS-редирект на https://t.me/ai_qadam_community (index.html / 404.html).
+#
+# Домен берётся из файла CNAME в корне репозитория.
+# Секреты:
+#   CLOUDFLARE_API_TOKEN — API Token с правами Zone:DNS:Edit на зону (обязательный).
+#   CLOUDFLARE_ZONE_ID   — ID зоны (необязательный; если пуст — определяется по имени домена).
+name: cloudflare-dns
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - CNAME
+      - .github/workflows/cloudflare-dns.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  sync-dns:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Sync apex A + www CNAME to GitHub Pages
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ZONE_ID: ${{ secrets.CLOUDFLARE_ZONE_ID }}
+        run: |
+          set -euo pipefail
+          if [ -z "${CLOUDFLARE_API_TOKEN:-}" ]; then
+            echo "::error::Missing secret CLOUDFLARE_API_TOKEN (Zone:DNS:Edit on the zone)."
+            exit 1
+          fi
+          DOMAIN="$(tr -d ' \r\n' < CNAME)"
+          if [ -z "$DOMAIN" ]; then
+            echo "::error::CNAME file is empty."
+            exit 1
+          fi
+          echo "Domain: $DOMAIN"
+
+          ZONE_ID="${CLOUDFLARE_ZONE_ID:-}"
+          if [ -z "$ZONE_ID" ]; then
+            ZONE_ID="$(curl -sS -H "Authorization: Bearer $CLOUDFLARE_API_TOKEN" \
+              "https://api.cloudflare.com/client/v4/zones?name=$DOMAIN" \
+              | python3 -c 'import json,sys; d=json.load(sys.stdin); print(d["result"][0]["id"] if d.get("success") and d["result"] else "")')"
+            if [ -z "$ZONE_ID" ]; then
+              echo "::error::Zone '$DOMAIN' not found via API. Check token permissions or set CLOUDFLARE_ZONE_ID."
+              exit 1
+            fi
+          fi
+          echo "Zone ID: $ZONE_ID"
+
+          # GitHub Pages IPv4 для apex (https://docs.github.com/en/pages/configuring-a-custom-domain-for-your-github-pages-site/managing-a-custom-domain-for-your-github-pages-site#configuring-an-apex-domain)
+          PAGES_IPS="185.199.108.153 185.199.109.153 185.199.110.153 185.199.111.153"
+          PAGES_HOST="aiqadam.github.io"
+
+          export CLOUDFLARE_API_TOKEN ZONE_ID
+          DESIRED_A="$PAGES_IPS" DESIRED_CNAME="$PAGES_HOST" python3 - <<'EOF'
+          import json, os, urllib.request
+
+          token = os.environ["CLOUDFLARE_API_TOKEN"]
+          zone = os.environ["ZONE_ID"]
+          base = f"https://api.cloudflare.com/client/v4/zones/{zone}/dns_records"
+
+          def api(method, url, payload=None):
+              req = urllib.request.Request(
+                  url,
+                  data=json.dumps(payload).encode() if payload is not None else None,
+                  method=method,
+                  headers={"Authorization": f"Bearer {token}", "Content-Type": "application/json"},
+              )
+              with urllib.request.urlopen(req) as r:
+                  d = json.load(r)
+              if not d.get("success"):
+                  raise SystemExit(f"Cloudflare API error: {d.get('errors')}")
+              return d.get("result")
+
+          existing = api("GET", base + "?per_page=100")
+          by_key = {(r["type"], r["name"].rstrip(".").lower()): r for r in existing}
+
+          def ensure(rtype, name, content, proxied=True):
+              # Cloudflare возвращает полное имя (name = "aiqadam.org" / "www.aiqadam.org")
+              key = (rtype, name.lower())
+              rec = by_key.get(key)
+              body = {"type": rtype, "name": name, "content": content, "ttl": 1, "proxied": proxied}
+              if rec is None:
+                  created = api("POST", base, body)
+                  print(f"CREATED {rtype} {name} -> {content} (id={created['id']})")
+              elif rec["content"] != content or rec.get("proxied") != proxied:
+                  api("PUT", f"{base}/{rec['id']}", body)
+                  print(f"UPDATED {rtype} {name} -> {content} (was {rec['content']}, proxied={rec.get('proxied')})")
+              else:
+                  print(f"OK {rtype} {name} -> {content}")
+
+          # Apex берём из CNAME-файла; www — его поддомен.
+          with open("CNAME") as f:
+              apex = f.read().strip().strip().lower()
+          for ip in os.environ["DESIRED_A"].split():
+              ensure("A", apex, ip)
+          ensure("CNAME", f"www.{apex}", os.environ["DESIRED_CNAME"])
+
+          # Чистим лишние A-записи apex, не входящие в набор Pages (чтобы старый origin не мешал).
+          wanted_ips = set(os.environ["DESIRED_A"].split())
+          for r in existing:
+              if (r["type"] == "A" and r["name"].rstrip(".").lower() == apex
+                      and r["content"] not in wanted_ips):
+                  api("DELETE", f"{base}/{r['id']}")
+                  print(f"DELETED stale A {apex} -> {r['content']} (id={r['id']})")
+          EOF
+          echo "DNS sync done."
